@@ -1,115 +1,145 @@
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
   Environment,
   OrbitControls,
   useGLTF,
-} from '@react-three/drei'
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { Box3, MathUtils, Vector3 } from 'three'
+} from "@react-three/drei";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Box3, MathUtils, Vector3 } from "three";
 
-const MODEL_PATH = '/models/car.glb'
+const MODEL_PATH = "/models/car.glb";
 
 function useResponsiveCamera() {
   const [cameraPosition, setCameraPosition] = useState(() =>
     window.innerWidth < 768 ? [0, 1.35, 6.6] : [0, 1.5, 5],
-  )
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      setCameraPosition(window.innerWidth < 768 ? [0, 1.35, 6.6] : [0, 1.5, 5])
-    }
+      setCameraPosition(window.innerWidth < 768 ? [0, 1.35, 6.6] : [0, 1.5, 5]);
+    };
 
-    window.addEventListener('resize', handleResize, { passive: true })
+    window.addEventListener("resize", handleResize, { passive: true });
 
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  return cameraPosition
+  return cameraPosition;
 }
 
 function CarModel({ onLoaded, scrollProgress = 0 }) {
-  const groupRef = useRef(null)
-  const pointerRef = useRef({ x: 0, y: 0 })
-  const autoRotationRef = useRef(0)
-  const { scene } = useGLTF(MODEL_PATH)
+  const groupRef = useRef(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
+  const isVisibleRef = useRef(true);
+  const heroVisibleRef = useRef(true);
+  const autoRotationRef = useRef(0);
+  const { scene } = useGLTF(MODEL_PATH);
 
   const { model, offset } = useMemo(() => {
-    const clonedScene = scene.clone(true)
+    const clonedScene = scene.clone(true);
 
     clonedScene.traverse((child) => {
-      if (!child.isMesh) return
+      if (!child.isMesh) return;
 
-      child.castShadow = true
-      child.receiveShadow = true
+      child.castShadow = true;
+      child.receiveShadow = true;
 
       if (child.material) {
-        child.material.envMapIntensity = 1.35
-        child.material.needsUpdate = true
+        child.material.envMapIntensity = 1.35;
+        child.material.needsUpdate = true;
       }
-    })
+    });
 
-    const bounds = new Box3().setFromObject(clonedScene)
-    const center = bounds.getCenter(new Vector3())
-    const baseY = bounds.min.y
+    const bounds = new Box3().setFromObject(clonedScene);
+    const center = bounds.getCenter(new Vector3());
+    const baseY = bounds.min.y;
 
     return {
       model: clonedScene,
       offset: [-center.x, -baseY, -center.z],
-    }
-  }, [scene])
+    };
+  }, [scene]);
 
   useEffect(() => {
-    onLoaded?.()
-  }, [onLoaded])
+    onLoaded?.();
+  }, [onLoaded]);
 
   useEffect(() => {
     const handlePointerMove = (event) => {
-      pointerRef.current.x = (event.clientX / window.innerWidth) * 2 - 1
-      pointerRef.current.y = -((event.clientY / window.innerHeight) * 2 - 1)
+      pointerRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      pointerRef.current.y = -((event.clientY / window.innerHeight) * 2 - 1);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
+
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, []);
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      isVisibleRef.current = document.visibilityState === "visible";
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    const heroEl = document.getElementById("top");
+    if (heroEl) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          heroVisibleRef.current = entry.isIntersecting;
+        },
+        { threshold: 0.1 },
+      );
+      observer.observe(heroEl);
+      return () => {
+        document.removeEventListener("visibilitychange", handleVisibility);
+        observer.disconnect();
+      };
     }
-
-    window.addEventListener('pointermove', handlePointerMove, { passive: true })
-
-    return () => window.removeEventListener('pointermove', handlePointerMove)
-  }, [])
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
 
   useFrame((_, delta) => {
-    if (!groupRef.current) return
+    if (!groupRef.current) return;
 
-    autoRotationRef.current += delta * 0.18
+    if (isVisibleRef.current && heroVisibleRef.current) {
+      autoRotationRef.current += delta * 0.18;
+    }
 
-    const scrollRotationY = scrollProgress * Math.PI
+    const scrollRotationY = scrollProgress * Math.PI;
     const targetY =
-      autoRotationRef.current + pointerRef.current.x * 0.3 + scrollRotationY
-    const targetX = pointerRef.current.y * 0.1
+      autoRotationRef.current + pointerRef.current.x * 0.3 + scrollRotationY;
+    const targetX = pointerRef.current.y * 0.1;
 
     groupRef.current.rotation.y = MathUtils.lerp(
       groupRef.current.rotation.y,
       targetY,
       0.045,
-    )
+    );
     groupRef.current.rotation.x = MathUtils.lerp(
       groupRef.current.rotation.x,
       targetX,
       0.04,
-    )
-  })
+    );
+  });
 
   return (
     <group ref={groupRef} scale={1.5} position={[0, -0.62, 0]}>
       <primitive object={model} position={offset} />
     </group>
-  )
+  );
 }
 
 function CameraRig({ offsetX = 0 }) {
   useFrame(({ camera }) => {
-    camera.position.x = MathUtils.lerp(camera.position.x, offsetX, 0.05)
-    camera.updateProjectionMatrix()
-  })
+    camera.position.x = MathUtils.lerp(camera.position.x, offsetX, 0.05);
+    camera.updateProjectionMatrix();
+  });
 
-  return null
+  return null;
 }
 
 function CarScene({
@@ -118,7 +148,7 @@ function CarScene({
   cameraOffsetX = 0,
   enableOrbit = true,
 }) {
-  const cameraPosition = useResponsiveCamera()
+  const cameraPosition = useResponsiveCamera();
 
   return (
     <div className="absolute inset-0 z-0 h-full w-full">
@@ -134,7 +164,7 @@ function CarScene({
         gl={{
           alpha: true,
           antialias: true,
-          powerPreference: 'high-performance',
+          powerPreference: "high-performance",
         }}
       >
         <ambientLight intensity={0.3} />
@@ -175,9 +205,9 @@ function CarScene({
         />
       </Canvas>
     </div>
-  )
+  );
 }
 
-useGLTF.preload(MODEL_PATH)
+useGLTF.preload(MODEL_PATH);
 
-export default CarScene
+export default CarScene;
