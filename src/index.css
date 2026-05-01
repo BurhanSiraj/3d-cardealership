@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  --color-zenturo-black: #0a0a0a;
+  --color-zenturo-dark: #111111;
+  --color-zenturo-gold: #c9a84c;
+  --color-zenturo-gold-light: #e0c068;
+  --color-zenturo-gold-dim: #8a6d2b;
+  --color-zenturo-white: #f5f0e8;
+  --color-zenturo-gray: #888888;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #0a0a0a;
+    color: #f5f0e8;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    font-synthesis: none;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: #c9a84c;
+    color: #0a0a0a;
+  }
+}
+
+@keyframes loading-progress {
+  0%,
+  100% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  50% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@keyframes loading-exit {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -100vh, 0);
+  }
+}
+
+@keyframes loading-mark-exit {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes scroll-pulse {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0) scale(0.8);
+  }
+
+  20%,
+  60% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-50%, 32px, 0) scale(0.8);
+  }
+}
+
+.loading-screen-exit {
+  animation: loading-exit 1s ease-in-out forwards;
+}
+
+.loading-mark-exit {
+  animation: loading-mark-exit 1s ease-in-out forwards;
+}
+
+.loading-line-progress {
+  animation: loading-progress 2s ease-in-out infinite;
+}
+
+.scroll-indicator-pulse::after {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  content: '';
+  background: #c9a84c;
+  border-radius: 9999px;
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .zenturo-cursor {
+    display: none;
+  }
+}
