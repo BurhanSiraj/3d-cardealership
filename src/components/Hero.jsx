@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CarScene from './CarScene'
 
-gsap.registerPlugin(useGSAP)
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 function CustomCursor({ active }) {
   const cursorRef = useRef(null)
@@ -60,6 +61,10 @@ function CustomCursor({ active }) {
 
 function Hero({ onModelLoaded, showContent }) {
   const containerRef = useRef(null)
+  const heroTextRef = useRef(null)
+  const revealPanelRef = useRef(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [cameraOffsetX, setCameraOffsetX] = useState(0)
   const { contextSafe } = useGSAP({ scope: containerRef })
 
   useEffect(() => {
@@ -111,6 +116,76 @@ function Hero({ onModelLoaded, showContent }) {
     return () => window.clearTimeout(fallback)
   }, [showContent, contextSafe])
 
+  useEffect(() => {
+    if (!showContent || !containerRef.current) return undefined
+
+    const proxy = { progress: 0 }
+
+    gsap.set(heroTextRef.current, { opacity: 1, x: 0 })
+    gsap.set(revealPanelRef.current, {
+      opacity: 0,
+      x: 60,
+      pointerEvents: 'none',
+    })
+
+    const scrollTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        pin: true,
+        scrub: 1.2,
+        start: 'top top',
+        end: '+=120%',
+      },
+    })
+
+    scrollTimeline.to(
+      proxy,
+      {
+        progress: 1,
+        duration: 1,
+        ease: 'none',
+        onUpdate: () => {
+          const p = proxy.progress
+
+          setScrollProgress(Math.min(p * 2, 1))
+          setCameraOffsetX(p < 0.5 ? p * -3.6 : -1.8)
+
+          if (revealPanelRef.current) {
+            gsap.set(revealPanelRef.current, {
+              pointerEvents: p > 0.5 ? 'auto' : 'none',
+            })
+          }
+        },
+      },
+      0,
+    )
+    scrollTimeline.to(
+      heroTextRef.current,
+      {
+        opacity: 0,
+        x: -40,
+        duration: 0.5,
+        ease: 'none',
+      },
+      0,
+    )
+    scrollTimeline.to(
+      revealPanelRef.current,
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.5,
+        ease: 'none',
+      },
+      0.5,
+    )
+
+    return () => {
+      scrollTimeline.scrollTrigger?.kill()
+      scrollTimeline.kill()
+    }
+  }, [showContent])
+
   const revealState = showContent
     ? ''
     : 'translate-y-10 opacity-0 will-change-transform'
@@ -121,13 +196,18 @@ function Hero({ onModelLoaded, showContent }) {
       id="top"
       className="isolate relative h-screen min-h-[720px] w-full overflow-hidden bg-zenturo-black sm:min-h-[760px] md:min-h-screen"
     >
-      <CarScene onLoaded={onModelLoaded} />
+      <CarScene
+        onLoaded={onModelLoaded}
+        scrollProgress={scrollProgress}
+        cameraOffsetX={cameraOffsetX}
+        enableOrbit={scrollProgress === 0}
+      />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[40%] bg-gradient-to-t from-zenturo-black via-transparent to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-full bg-gradient-to-r from-zenturo-black/70 to-transparent md:w-3/4" />
 
       <div className="absolute inset-0 z-20 flex items-end pb-24 pl-8 pr-6 md:pb-32 md:pl-16">
-        <div className="max-w-2xl">
+        <div ref={heroTextRef} className="max-w-2xl">
           <p
             className={`hero-reveal mb-4 font-body text-xs uppercase tracking-[0.4em] text-zenturo-gold ${revealState}`}
           >
@@ -165,6 +245,35 @@ function Hero({ onModelLoaded, showContent }) {
             </a>
           </div>
         </div>
+      </div>
+
+      <div
+        ref={revealPanelRef}
+        className="pointer-events-none absolute right-0 top-0 z-20 flex h-full w-full flex-col justify-center px-8 opacity-0 md:w-2/5 md:pl-8 md:pr-16"
+      >
+        <p className="font-body text-xs uppercase tracking-[0.4em] text-zenturo-gold">
+          ZENTURO APEX
+        </p>
+        <p className="mt-6 font-display text-6xl font-extrabold leading-none text-zenturo-white">
+          0–100
+        </p>
+        <p className="mt-2 font-body text-sm text-zenturo-gold/70">km/h in 2.8s</p>
+        <div className="my-6 h-px w-[60px] bg-zenturo-gold/20" />
+        <p className="font-display text-6xl font-extrabold leading-none text-zenturo-white">
+          720
+        </p>
+        <p className="mt-2 font-body text-sm text-zenturo-gold/70">Horsepower</p>
+        <div className="my-6 h-px w-[60px] bg-zenturo-gold/20" />
+        <p className="font-display text-6xl font-extrabold leading-none text-zenturo-white">
+          Top 340
+        </p>
+        <p className="mt-2 font-body text-sm text-zenturo-gold/70">km/h</p>
+        <a
+          href="#configure"
+          className="mt-10 w-fit font-body text-sm uppercase tracking-widest text-zenturo-gold hover:underline"
+        >
+          Configure Yours →
+        </a>
       </div>
 
       <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3">

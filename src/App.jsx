@@ -3,6 +3,10 @@ import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Models from "./components/Models";
+import About from "./components/About";
+import Gallery from "./components/Gallery";
+import Services from "./components/Services";
+import Contact from "./components/Contact";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -26,6 +30,10 @@ function App() {
       <Navbar visible={showContent} />
       <Hero onModelLoaded={handleModelLoaded} showContent={showContent} />
       <Models />
+      <About />
+      <Gallery />
+      <Services />
+      <Contact />
     </div>
   );
 }

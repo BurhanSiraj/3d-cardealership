@@ -28,7 +28,7 @@ function useResponsiveCamera() {
   return cameraPosition
 }
 
-function CarModel({ onLoaded }) {
+function CarModel({ onLoaded, scrollProgress = 0 }) {
   const groupRef = useRef(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const autoRotationRef = useRef(0)
@@ -79,7 +79,9 @@ function CarModel({ onLoaded }) {
 
     autoRotationRef.current += delta * 0.18
 
-    const targetY = autoRotationRef.current + pointerRef.current.x * 0.3
+    const scrollRotationY = scrollProgress * Math.PI
+    const targetY =
+      autoRotationRef.current + pointerRef.current.x * 0.3 + scrollRotationY
     const targetX = pointerRef.current.y * 0.1
 
     groupRef.current.rotation.y = MathUtils.lerp(
@@ -101,7 +103,21 @@ function CarModel({ onLoaded }) {
   )
 }
 
-function CarScene({ onLoaded }) {
+function CameraRig({ offsetX = 0 }) {
+  useFrame(({ camera }) => {
+    camera.position.x = MathUtils.lerp(camera.position.x, offsetX, 0.05)
+    camera.updateProjectionMatrix()
+  })
+
+  return null
+}
+
+function CarScene({
+  onLoaded,
+  scrollProgress = 0,
+  cameraOffsetX = 0,
+  enableOrbit = true,
+}) {
   const cameraPosition = useResponsiveCamera()
 
   return (
@@ -133,8 +149,9 @@ function CarScene({ onLoaded }) {
           color="#c9a84c"
           intensity={0.8}
         />
+        <CameraRig offsetX={cameraOffsetX} />
         <Suspense fallback={null}>
-          <CarModel onLoaded={onLoaded} />
+          <CarModel onLoaded={onLoaded} scrollProgress={scrollProgress} />
         </Suspense>
         <Environment preset="city" />
         <ContactShadows
@@ -146,6 +163,7 @@ function CarScene({ onLoaded }) {
           color="#c9a84c"
         />
         <OrbitControls
+          enabled={enableOrbit}
           enableZoom={false}
           enablePan={false}
           enableDamping
