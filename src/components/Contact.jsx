@@ -1,32 +1,32 @@
-import { useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useGSAP } from '@gsap/react'
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+gsap.registerPlugin(ScrollTrigger);
 
-gsap.registerPlugin(ScrollTrigger)
-
-const socialLinks = ['Instagram', 'Twitter/X', 'YouTube']
+const socialLinks = ["Instagram", "Twitter/X", "YouTube"];
 
 function Contact() {
-  const sectionRef = useRef(null)
-  const contentRef = useRef(null)
-  const footerRef = useRef(null)
+  const sectionRef = useRef(null);
+  const contentRef = useRef(null);
+  const footerRef = useRef(null);
+  const videoRef = useRef(null);
 
   useGSAP(
     () => {
       const headingLines = contentRef.current?.querySelectorAll(
-        '.contact-heading-line',
-      )
+        ".contact-heading-line",
+      );
       const revealElements = contentRef.current?.querySelectorAll(
-        '.contact-detail-reveal',
-      )
+        ".contact-detail-reveal",
+      );
 
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 70%',
+          start: "top 70%",
         },
-      })
+      });
 
       timeline
         .fromTo(
@@ -36,7 +36,7 @@ function Contact() {
             opacity: 1,
             y: 0,
             duration: 0.9,
-            ease: 'power3.out',
+            ease: "power3.out",
             stagger: 0.2,
           },
         )
@@ -47,11 +47,11 @@ function Contact() {
             opacity: 1,
             y: 0,
             duration: 0.75,
-            ease: 'power3.out',
+            ease: "power3.out",
             stagger: 0.12,
           },
-          '-=0.25',
-        )
+          "-=0.25",
+        );
 
       gsap.fromTo(
         footerRef.current,
@@ -61,16 +61,31 @@ function Contact() {
           y: 0,
           duration: 0.8,
           delay: 0.4,
-          ease: 'power2.out',
+          ease: "power2.out",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 55%',
+            start: "top 55%",
           },
         },
-      )
+      );
+
+      // Fade video in once section enters view
+      gsap.fromTo(
+        videoRef.current,
+        { opacity: 0 },
+        {
+          opacity: 0.18,
+          duration: 1.6,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+          },
+        },
+      );
     },
     { scope: sectionRef },
-  )
+  );
 
   return (
     <section
@@ -78,11 +93,35 @@ function Contact() {
       ref={sectionRef}
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zenturo-black px-8"
     >
+      {/* Video background */}
+      <video
+        ref={videoRef}
+        src={"https://ik.imagekit.io/asadtanvir/contact-bg.mp4"}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover opacity-0"
+        style={{
+          mixBlendMode: "lighten",
+        }}
+      />
+
+      {/* Overlay: keeps legibility, preserves video atmosphere */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(201,168,76,0.04) 0%, transparent 70%)',
+            "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.75) 100%)",
+        }}
+      />
+
+      {/* Gold radial glow — kept, sits above video */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[2]"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 70%)",
         }}
       />
 
@@ -109,7 +148,7 @@ function Contact() {
           {socialLinks.map((link) => (
             <a
               key={link}
-              href={`#${link.toLowerCase().replace('/', '-')}`}
+              href={`#${link.toLowerCase().replace("/", "-")}`}
               className="font-body text-xs uppercase tracking-widest text-zenturo-white/40 transition duration-300 hover:text-zenturo-gold hover:opacity-100"
             >
               {link}
@@ -133,7 +172,7 @@ function Contact() {
         </p>
       </footer>
     </section>
-  )
+  );
 }
 
-export default Contact
+export default Contact;

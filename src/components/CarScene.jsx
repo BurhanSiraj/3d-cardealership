@@ -31,9 +31,9 @@ function useResponsiveCamera() {
 function CarModel({ onLoaded, scrollProgress = 0 }) {
   const groupRef = useRef(null);
   const pointerRef = useRef({ x: 0, y: 0 });
+  const autoRotationRef = useRef(0);
   const isVisibleRef = useRef(true);
   const heroVisibleRef = useRef(true);
-  const autoRotationRef = useRef(0);
   const { scene } = useGLTF(MODEL_PATH);
 
   const { model, offset } = useMemo(() => {
@@ -105,8 +105,9 @@ function CarModel({ onLoaded, scrollProgress = 0 }) {
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
+    const safeDelta = Math.min(delta, 0.05);
     if (isVisibleRef.current && heroVisibleRef.current) {
-      autoRotationRef.current += delta * 0.18;
+      autoRotationRef.current += safeDelta * 0.18;
     }
 
     const scrollRotationY = scrollProgress * Math.PI;
@@ -117,12 +118,12 @@ function CarModel({ onLoaded, scrollProgress = 0 }) {
     groupRef.current.rotation.y = MathUtils.lerp(
       groupRef.current.rotation.y,
       targetY,
-      0.045,
+      safeDelta * 0.9,
     );
     groupRef.current.rotation.x = MathUtils.lerp(
       groupRef.current.rotation.x,
       targetX,
-      0.04,
+      safeDelta * 0.8,
     );
   });
 
