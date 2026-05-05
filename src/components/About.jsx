@@ -134,8 +134,8 @@ function About() {
       <div className="mx-auto max-w-5xl text-center">
         <p
           ref={eyebrowRef}
-          className="font-body text-xs uppercase tracking-[0.5em] opacity-0"
-          style={{ color: 'rgba(201,168,76,0.7)' }}
+          className="font-body text-zenturo-gold/70 text-xs uppercase tracking-[0.5em] opacity-0"
+          // style={{ color: 'rgba(201,168,76,0.7)' }}
         >
           EST. 2024
         </p>
@@ -204,8 +204,8 @@ function About() {
 
         <p
           ref={taglineRef}
-          className="mt-20 font-display text-lg font-normal italic tracking-wide opacity-0"
-          style={{ color: 'rgba(201,168,76,0.6)' }}
+          className="mt-20 font-display text-lg font-normal text-zenturo-gold/70 italic tracking-wide opacity-0"
+          // style={{ color: 'rgba(201,168,76,0.6)' }}
         >
           Engineered in silence. Delivered in thunder.
         </p>

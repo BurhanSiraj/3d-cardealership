@@ -49,15 +49,15 @@ function ModelRow({ model, onHover, onLeave, onMouseMove }) {
         onMouseMove={onMouseMove}
       >
         <div className="flex flex-col">
-          <span className="font-display text-4xl font-bold text-zenturo-white/90 transition-colors duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:text-[#0a0a0a] md:text-5xl lg:text-6xl">
+          <span className="font-display text-4xl font-bold text-zenturo-white/90 transition-colors duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:text-[#08090d] md:text-5xl lg:text-6xl">
             {model.name}
           </span>
-          <span className="mt-1 font-body text-xs uppercase tracking-widest text-zenturo-gray/60 transition-colors duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:text-[#0a0a0a]/70">
+          <span className="mt-1 font-body text-xs uppercase tracking-widest text-zenturo-gray/60 transition-colors duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:text-[#08090d]/70">
             {model.tag}
           </span>
         </div>
         <span
-          className="text-2xl text-zenturo-gold/60 transition-all duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-[#0a0a0a] group-hover:opacity-100"
+          className="text-2xl text-zenturo-gold/60 transition-all duration-[350ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-[#08090d] group-hover:opacity-100"
           aria-hidden="true"
         >
           ↗

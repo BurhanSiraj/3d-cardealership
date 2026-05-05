@@ -145,7 +145,7 @@ function Services() {
                 />
               </div>
 
-              <div className="flex min-h-[42vh] items-center justify-center bg-[#111111] px-8 py-16 md:min-h-0 md:w-1/2 md:px-16 lg:px-24">
+              <div className="flex min-h-[42vh] items-center justify-center bg-[#0f1118] px-8 py-16 md:min-h-0 md:w-1/2 md:px-16 lg:px-24">
                 <div
                   ref={(element) => {
                     textBlocksRef.current[index] = element

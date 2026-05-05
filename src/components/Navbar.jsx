@@ -109,7 +109,7 @@ function Navbar({ visible = true }) {
       >
         <a
           href="#top"
-          className="font-display text-lg font-bold tracking-[0.25em] text-[#c9a84c]"
+          className="font-display text-lg font-bold tracking-[0.25em] text-[#3884ff]"
           aria-label="ZENTURO home"
         >
           ZENTURO
@@ -121,7 +121,7 @@ function Navbar({ visible = true }) {
               <a
                 key={link}
                 href={`#${link.toLowerCase()}`}
-                className="font-body text-sm font-normal uppercase tracking-widest text-[rgba(245,240,232,0.6)] transition-colors duration-300 hover:text-[#c9a84c]"
+                className="font-body text-sm font-normal uppercase tracking-widest text-[rgba(232,237,245,0.6)] transition-colors duration-300 hover:text-[#3884ff]"
               >
                 {link}
               </a>
@@ -135,9 +135,9 @@ function Navbar({ visible = true }) {
             aria-expanded={isPanelOpen}
             onClick={() => setIsPanelOpen(true)}
           >
-            <span className="h-px w-6 bg-[#c9a84c] transition-[width] duration-300" />
-            <span className="h-px w-6 bg-[#c9a84c] transition-[width] duration-300 group-hover:w-3" />
-            <span className="h-px w-6 bg-[#c9a84c] transition-[width] duration-300" />
+            <span className="h-px w-6 bg-[#3884ff] transition-[width] duration-300" />
+            <span className="h-px w-6 bg-[#3884ff] transition-[width] duration-300 group-hover:w-3" />
+            <span className="h-px w-6 bg-[#3884ff] transition-[width] duration-300" />
           </button>
         </div>
       </header>
@@ -152,7 +152,7 @@ function Navbar({ visible = true }) {
       />
 
       <aside
-        className={`fixed right-0 top-0 z-[60] h-screen w-[80vw] bg-[#111111] transition-transform duration-[450ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] sm:w-[420px] ${
+        className={`fixed right-0 top-0 z-[60] h-screen w-[80vw] bg-[#0f1118] transition-transform duration-[450ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] sm:w-[420px] ${
           isPanelOpen
             ? 'pointer-events-auto translate-x-0'
             : 'pointer-events-none translate-x-full'
@@ -161,7 +161,7 @@ function Navbar({ visible = true }) {
       >
         <button
           type="button"
-          className="absolute right-8 top-8 font-display text-2xl text-[#c9a84c] transition-transform duration-300 hover:rotate-90"
+          className="absolute right-8 top-8 font-display text-2xl text-[#3884ff] transition-transform duration-300 hover:rotate-90"
           aria-label="Close navigation panel"
           onClick={closePanel}
         >
@@ -176,12 +176,12 @@ function Navbar({ visible = true }) {
                   panelLinksRef.current[index] = element
                 }}
                 href={`#${link.toLowerCase()}`}
-                className="block font-display text-4xl font-semibold text-[#f5f0e8] opacity-0 transition duration-300 ease-out hover:translate-x-[10px] hover:text-[#c9a84c]"
+                className="block font-display text-4xl font-semibold text-[#e8edf5] opacity-0 transition duration-300 ease-out hover:translate-x-[10px] hover:text-[#3884ff]"
                 onClick={closePanel}
               >
                 {link}
               </a>
-              <span className="mt-5 block h-px w-full bg-[rgba(201,168,76,0.15)]" />
+              <span className="mt-5 block h-px w-full bg-[rgba(56,132,255,0.15)]" />
             </div>
           ))}
         </nav>

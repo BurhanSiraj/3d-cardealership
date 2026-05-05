@@ -138,8 +138,8 @@ function Gallery() {
         <div className="sticky top-0 h-screen overflow-hidden">
           {/* Progress counter */}
           <div
-            className="absolute right-8 top-8 z-10 font-body text-xs uppercase tracking-widest md:right-16"
-            style={{ color: "rgba(201,168,76,0.6)" }}
+            className="absolute text-zenturo-gold/70 right-8 top-8 z-10 font-body text-xs uppercase tracking-widest md:right-16"
+            // style={{ color: "rgba(201,168,76,0.6)" }}
           >
             {String(activeIndex + 1).padStart(2, "0")} /{" "}
             {String(galleryImages.length).padStart(2, "0")}
@@ -174,8 +174,8 @@ function Gallery() {
                     {image.label}
                   </p>
                   <p
-                    className="mt-1 font-body text-xs uppercase tracking-wider"
-                    style={{ color: "rgba(201,168,76,0.7)" }}
+                    className="mt-1 font-body text-xs uppercase tracking-wider text-zenturo-gold/70"
+                    // style={{ color: "rgba(201,168,76,0.7)" }}
                   >
                     {image.location}
                   </p>

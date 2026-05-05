@@ -172,12 +172,12 @@ function CarScene({
         <directionalLight
           position={[4, 5, 3]}
           intensity={1.5}
-          color="#f5f0e8"
+          color="#e8edf5"
           castShadow
         />
         <pointLight
           position={[-2.5, 1.2, 2.5]}
-          color="#c9a84c"
+          color="#3884ff"
           intensity={0.8}
         />
         <CameraRig offsetX={cameraOffsetX} />
@@ -191,7 +191,7 @@ function CarScene({
           blur={2.5}
           scale={9}
           far={4}
-          color="#c9a84c"
+          color="#3884ff"
         />
         <OrbitControls
           enabled={enableOrbit}
